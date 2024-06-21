@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hover Random Text</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: sans-serif;
+        }
+        .con {
+            width: 200px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            font-size: 12px;
+            font-weight: 100;
+        }
+
+        .con:hover{
+            box-shadow:inset 0 0 10px 5px rgba(0,0,0,0.5);
+
+        }
+    </style>
+</head>
+<body>
+    <div class="con">
+        <h1 id="text">HELLO</h1>
+    </div>
+    
+    <script>
+        const originalText = "HELLO";
+        const texts = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&()[]{}?";
+        const h1 = document.getElementById('text');
+        const container = document.querySelector('.con');
+        let intervalIds = [];
+        let changeCounts = Array(originalText.length).fill(0);
+        let changeIntervals = Array(originalText.length).fill(0);
+    
+        function getRandomText(texts) {
+            const randomIndex = Math.floor(Math.random() * texts.length);
+            return texts[randomIndex];
+        }
+    
+        function getRandomInterval(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+    
+        container.addEventListener('mouseenter', () => {
+            // Clear any existing intervals
+            intervalIds.forEach(id => clearInterval(id));
+            intervalIds = [];
+    
+            // Start intervals for each character
+            originalText.split('').forEach((char, index) => {
+                intervalIds[index] = setInterval(() => {
+                    changeCounts[index]++;
+                    if (changeCounts[index] >= changeIntervals[index]) {
+                        changeIntervals[index] = getRandomInterval(3, 9);
+                        changeCounts[index] = 0;
+                        let newText = originalText.substring(0, index) + getRandomText(texts) + originalText.substring(index + 1);
+                        h1.textContent = newText;
+                    }
+                }, 60);
+            });
+        });
+    
+        container.addEventListener('mouseleave', () => {
+            // Clear all intervals when mouse leaves
+            intervalIds.forEach(id => clearInterval(id));
+            h1.textContent = originalText;
+            changeCounts = Array(originalText.length).fill(0);
+            changeIntervals = Array(originalText.length).fill(0);
+        });
+    </script>
+    
+    
+    
+    
+    
+</body>
+</html>
